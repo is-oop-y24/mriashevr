@@ -15,8 +15,8 @@ namespace Isu
             // var group = isuService.AddGroup("M3203");
             // Console.WriteLine("all good");
             //
-            // isuService.AddStudent(group, "fuck");
-            // isuService.AddStudent(group, "suck");
+            // isuService.AddStudent(group, "fun");
+            // isuService.AddStudent(group, "sun");
             // Console.WriteLine("Sonya and Masha are besties forever!!!");
             //
             // Console.WriteLine(isuService.GetStudent(100001).Name);

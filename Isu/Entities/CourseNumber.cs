@@ -11,12 +11,4 @@ namespace Isu.Entities
 
         public int Course { get; }
     }
-
-    // public enum CourseNumber
-    // {
-    //     Fisrt = 1,
-    //     Second = 2,
-    //     Third = 3,
-    //     Fourth = 4,
-    // }
 }

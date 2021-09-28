@@ -18,9 +18,10 @@ namespace Isu.Tests
         [Test]
         public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
         {
+            bool q = false;
             Group group =_isuService.AddGroup("M3208");
             Student student = _isuService.AddStudent(group, "blya");
-            Assert.Contains(student, group.Students);
+            Assert.AreEqual(group, student.Group);
         }
 
         [Test]
@@ -31,7 +32,7 @@ namespace Isu.Tests
             {
                 for (int i = 0; i <= 31; i++)
                 {
-                    Student student = _isuService.AddStudent(group, "A");
+                    Student student = _isuService.AddStudent(group, "Anthony");
                 }
             });
         }
@@ -52,8 +53,7 @@ namespace Isu.Tests
             Group group2 = _isuService.AddGroup("M3212");
             Student student = _isuService.AddStudent(group1, "Ivan");
             _isuService.ChangeStudentGroup(student, group2);
-            Assert.Contains(student, group2.Students);
-            Assert.True(group1.Students.Count == 0);
+            Assert.AreEqual(group2, student.Group);
         }
     }
 }

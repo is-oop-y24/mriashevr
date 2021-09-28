@@ -1,16 +1,19 @@
-﻿namespace Isu.Entities
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+namespace Isu.Entities
 {
     public class Student
     {
-        private static int _id;
-
-        public Student(string name)
+        public Student(Group group, string name)
         {
             Name = name;
-            Id = (++_id) + 100000;
+            Id = new IdGenerator().Id;
+            Group = group;
         }
 
+        public Group Group { get; set; }
         public string Name { get; }
         public int Id { get; }
-}
+    }
 }

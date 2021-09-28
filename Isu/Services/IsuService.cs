@@ -8,19 +8,16 @@ namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
-        /*public IsuService(int id)
-        {
-            Groups = new List<Group>();
-        }*/
-
-        private List<Group> Groups { get; } = new List<Group>();
+        private List<Group> _groups = new List<Group>();
+        private List<Student> _students = new List<Student>();
+        private int _maxAmoundOfStudents = 30;
 
         public Group AddGroup(string groupname)
         {
             if (groupname[0] != 'M')
                 throw new IsuException("Invalid group name");
             var group = new Group(groupname);
-            Groups.Add(group);
+            _groups.Add(group);
             return group;
         }
 
@@ -31,59 +28,69 @@ namespace Isu.Services
                 throw new IsuException("invalid name student");
             }
 
-            if (group.Students.Count >= 30)
+            int counting = 0;
+
+            foreach (Student stud in _students)
+            {
+                if (stud.Group == group)
+                {
+                    counting++;
+                }
+            }
+
+            if (counting > _maxAmoundOfStudents)
+            {
                 throw new IsuException("Too many students");
-            var student = new Student(name);
-            group.Students.Add(student);
+            }
+
+            var student = new Student(group, name);
             return student;
         }
 
         public Student GetStudent(int id)
         {
-            foreach (var group in Groups)
-            {
-                var student = group.GetStudent(id);
-                if (student != null)
+            var student = _students.Find(st => st.Id == id);
+            if (student != null)
+                {
                     return student;
-            }
+                }
 
             throw new IsuException("blya");
         }
 
         public Student FindStudent(string name)
         {
-            foreach (var group in Groups)
-            {
-                var student = group.FindStudent(name);
+                var student = _students.Find(st => st.Name == name);
                 if (student != null)
+                    {
                     return student;
-            }
+                    }
 
-            return null;
+                return null;
         }
 
         public List<Student> FindStudents(string groupName)
         {
-            foreach (var group in Groups)
+            var allStudents = new List<Student>();
+            foreach (Student stud in _students)
             {
-                if (group.Name.GName == groupName)
+                if (stud.Group.Name.GName == groupName)
                 {
-                    return group.Students;
+                   allStudents.Add(stud);
                 }
             }
 
-            return null;
+            return allStudents;
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
             var allStudents = new List<Student>();
-            foreach (var group in Groups)
+            foreach (Student stud in _students)
             {
-                if (group.Name.CourseNumber == courseNumber)
+                if (stud.Group.Name.СourseNumber == courseNumber)
                 {
-                    foreach (Student student in group.Students)
-                        allStudents.Add(student);
+                        allStudents.Add(stud);
                 }
             }
 
@@ -92,7 +99,7 @@ namespace Isu.Services
 
         public Group FindGroup(string groupName)
         {
-            foreach (var group in Groups)
+            foreach (var group in _groups)
             {
                 if (group.Name.GName == groupName)
                 {
@@ -106,9 +113,9 @@ namespace Isu.Services
         public List<Group> FindGroups(CourseNumber courseNumber)
         {
             var allGroups = new List<Group>();
-            foreach (var group in Groups)
+            foreach (var group in _groups)
             {
-                if (group.Name.CourseNumber.Course == courseNumber.Course)
+                if (group.Name.СourseNumber == courseNumber)
                 {
                     allGroups.Add(group);
                 }
@@ -119,17 +126,7 @@ namespace Isu.Services
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            foreach (var group in Groups)
-            {
-                foreach (var stud in group.Students.ToList())
-                {
-                    if (stud.Id == student.Id)
-                    {
-                        group.Students.Remove(student);
-                        newGroup.Students.Add(student);
-                    }
-                }
-            }
+            student.Group = newGroup;
         }
     }
 }

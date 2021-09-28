@@ -2,13 +2,11 @@
 
 namespace Isu.Entities
 {
-    public class CourseNumber
+    public enum CourseNumber
     {
-        public CourseNumber(int course)
-        {
-            Course = course;
-        }
-
-        public int Course { get; }
+        One = 1,
+        Two = 2,
+        Three = 3,
+        Four = 4,
     }
 }

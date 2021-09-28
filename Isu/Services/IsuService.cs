@@ -44,6 +44,7 @@ namespace Isu.Services
             }
 
             var student = new Student(group, name);
+            _students.Add(student);
             return student;
         }
 
@@ -62,9 +63,9 @@ namespace Isu.Services
         {
                 var student = _students.Find(st => st.Name == name);
                 if (student != null)
-                    {
+                {
                     return student;
-                    }
+                }
 
                 return null;
         }

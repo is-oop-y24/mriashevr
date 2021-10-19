@@ -8,7 +8,7 @@ namespace Isu.Entities
         public Student(Group group, string name)
         {
             Name = name;
-            Id = new IdGenerator().Id;
+            Id = IdGenerator.NewId();
             Group = group;
         }
 

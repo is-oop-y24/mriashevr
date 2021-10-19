@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using Isu.Entities;
 using Isu.Tools;
 
@@ -52,34 +51,22 @@ namespace Isu.Services
         {
             var student = _students.Find(st => st.Id == id);
             if (student != null)
-                {
-                    return student;
-                }
+            {
+                return student;
+            }
 
-            throw new IsuException("blya");
+            throw new IsuException("no student found");
         }
 
         public Student FindStudent(string name)
         {
-                var student = _students.Find(st => st.Name == name);
-                if (student != null)
-                {
-                    return student;
-                }
-
-                return null;
+            return _students.Find(st => st.Name == name);
         }
 
         public List<Student> FindStudents(string groupName)
         {
             var allStudents = new List<Student>();
-            foreach (Student stud in _students)
-            {
-                if (stud.Group.Name.GName == groupName)
-                {
-                   allStudents.Add(stud);
-                }
-            }
+            allStudents = (List<Student>)_students.Where(st => st.Group.Name.Name == groupName);
 
             return allStudents;
         }
@@ -87,46 +74,31 @@ namespace Isu.Services
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
             var allStudents = new List<Student>();
-            foreach (Student stud in _students)
-            {
-                if (stud.Group.Name.СourseNumber == courseNumber)
-                {
-                        allStudents.Add(stud);
-                }
-            }
+            allStudents = (List<Student>)_students.Where(st => st.Group.Name.СourseNumber == courseNumber);
 
             return allStudents;
         }
 
         public Group FindGroup(string groupName)
         {
-            foreach (var group in _groups)
-            {
-                if (group.Name.GName == groupName)
-                {
-                    return group;
-                }
-            }
-
-            return null;
+            return _groups.FirstOrDefault(@group => @group.Name.Name == groupName);
         }
 
         public List<Group> FindGroups(CourseNumber courseNumber)
         {
             var allGroups = new List<Group>();
-            foreach (var group in _groups)
-            {
-                if (group.Name.СourseNumber == courseNumber)
-                {
-                    allGroups.Add(group);
-                }
-            }
+            allGroups = (List<Group>)_groups.Where(gr => gr.Name.СourseNumber == courseNumber);
 
             return allGroups;
         }
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
+            if (student == null || newGroup == null)
+            {
+                throw new IsuException("invalid name of student or group");
+            }
+
             student.Group = newGroup;
         }
     }

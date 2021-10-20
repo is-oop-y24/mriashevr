@@ -13,8 +13,6 @@ namespace Isu.Services
 
         public Group AddGroup(string groupname)
         {
-            if (groupname[0] != 'M')
-                throw new IsuException("Invalid group name");
             var group = new Group(groupname);
             _groups.Add(group);
             return group;
@@ -27,15 +25,7 @@ namespace Isu.Services
                 throw new IsuException("invalid name student");
             }
 
-            int counting = 0;
-
-            foreach (Student stud in _students)
-            {
-                if (stud.Group == group)
-                {
-                    counting++;
-                }
-            }
+            int counting = _students.Count(stud => stud.Group == @group);
 
             if (counting > _maxAmoundOfStudents)
             {
@@ -65,18 +55,12 @@ namespace Isu.Services
 
         public List<Student> FindStudents(string groupName)
         {
-            var allStudents = new List<Student>();
-            allStudents = (List<Student>)_students.Where(st => st.Group.Name.Name == groupName);
-
-            return allStudents;
+            return _students.Where(st => st.Group.Name.Name == groupName).ToList();
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            var allStudents = new List<Student>();
-            allStudents = (List<Student>)_students.Where(st => st.Group.Name.СourseNumber == courseNumber);
-
-            return allStudents;
+            return _students.Where(st => st.Group.Name.СourseNumber == courseNumber).ToList();
         }
 
         public Group FindGroup(string groupName)
@@ -86,10 +70,7 @@ namespace Isu.Services
 
         public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            var allGroups = new List<Group>();
-            allGroups = (List<Group>)_groups.Where(gr => gr.Name.СourseNumber == courseNumber);
-
-            return allGroups;
+            return _groups.Where(gr => gr.Name.СourseNumber == courseNumber).ToList();
         }
 
         public void ChangeStudentGroup(Student student, Group newGroup)

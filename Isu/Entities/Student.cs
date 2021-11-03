@@ -10,10 +10,12 @@ namespace Isu.Entities
             Name = name;
             Id = IdGenerator.NewId();
             Group = group;
+            OgnpRegister = 0;
         }
 
         public Group Group { get; set; }
         public string Name { get; }
         public int Id { get; }
+        public int OgnpRegister { get; set; }
     }
 }

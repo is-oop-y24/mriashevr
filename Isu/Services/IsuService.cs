@@ -7,14 +7,20 @@ namespace Isu.Services
 {
     public class IsuService : IIsuService
     {
-        private List<Group> _groups = new List<Group>();
-        private List<Student> _students = new List<Student>();
         private int _maxAmoundOfStudents = 30;
+        public IsuService()
+        {
+            Students = new List<Student>();
+            Groups = new List<Group>();
+        }
+
+        public List<Student> Students { get; set; }
+        public List<Group> Groups { get; }
 
         public Group AddGroup(string groupname)
         {
             var group = new Group(groupname);
-            _groups.Add(group);
+            Groups.Add(group);
             return group;
         }
 
@@ -25,7 +31,7 @@ namespace Isu.Services
                 throw new IsuException("invalid name student");
             }
 
-            int counting = _students.Count(stud => stud.Group == @group);
+            int counting = Students.Count(stud => stud.Group == @group);
 
             if (counting > _maxAmoundOfStudents)
             {
@@ -33,13 +39,13 @@ namespace Isu.Services
             }
 
             var student = new Student(group, name);
-            _students.Add(student);
+            Students.Add(student);
             return student;
         }
 
         public Student GetStudent(int id)
         {
-            var student = _students.Find(st => st.Id == id);
+            var student = Students.Find(st => st.Id == id);
             if (student != null)
             {
                 return student;
@@ -50,27 +56,27 @@ namespace Isu.Services
 
         public Student FindStudent(string name)
         {
-            return _students.Find(st => st.Name == name);
+            return Students.Find(st => st.Name == name);
         }
 
         public List<Student> FindStudents(string groupName)
         {
-            return _students.Where(st => st.Group.Name.Name == groupName).ToList();
+            return Students.Where(st => st.Group.Name.Name == groupName).ToList();
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            return _students.Where(st => st.Group.Name.СourseNumber == courseNumber).ToList();
+            return Students.Where(st => st.Group.Name.СourseNumber == courseNumber).ToList();
         }
 
         public Group FindGroup(string groupName)
         {
-            return _groups.FirstOrDefault(@group => @group.Name.Name == groupName);
+            return Groups.FirstOrDefault(@group => @group.Name.Name == groupName);
         }
 
         public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            return _groups.Where(gr => gr.Name.СourseNumber == courseNumber).ToList();
+            return Groups.Where(gr => gr.Name.СourseNumber == courseNumber).ToList();
         }
 
         public void ChangeStudentGroup(Student student, Group newGroup)

@@ -1,4 +1,5 @@
-﻿using Shops.Entities;
+﻿using System.Collections.Generic;
+using Shops.Entities;
 using Shops.Services;
 using Shops.Tools;
 using NUnit.Framework;
@@ -45,6 +46,7 @@ namespace Shops.Tests
         {
             Customer customer = new Customer("Biba", 500);
             Shop shop1 = new Shop("pyatka", "someaddress");
+            Shop onlineshop = new Shop("online", "noadress");
             _shopManager.ProductRegister("coke", 100);
             _shopManager.ProductRegister("apple", 50);
             Product product11 = _shopManager.AddProducts("coke", 3, shop1);
@@ -54,9 +56,12 @@ namespace Shops.Tests
             Product product21 = _shopManager.AddProducts("coke", 10, shop2);
             Product product22 = _shopManager.AddProducts("apple", 5, shop2);
             _shopManager.ChangeProductPrice(shop2, product22, 40);
+            Product orderproduct = _shopManager.AddProducts("coke", 6, onlineshop);
+            var orderedproducts= new List<Product>();
+            orderedproducts.Add(orderproduct);
             Assert.Catch<ShopException>(() =>
             {
-                _shopManager.Delivery(customer, "coke", 6);
+                _shopManager.Delivery(customer, orderedproducts);
             });
         }
 
@@ -69,7 +74,10 @@ namespace Shops.Tests
             _shopManager.ProductRegister("apple", 50);
             Product product11 = _shopManager.AddProducts("coke", 3, shop1);
             Product product12 = _shopManager.AddProducts("apple", 10, shop1);
-            _shopManager.BuyProduct(customer, shop1, "coke", 3);
+            Product orderproduct = _shopManager.AddProducts("coke", 2, shop1);
+            var orderedproducts= new List<Product>();
+            orderedproducts.Add(orderproduct);
+            _shopManager.BuyProduct(customer, shop1, orderedproducts);
             Assert.AreEqual(0,product11.Amount);
         }
     }

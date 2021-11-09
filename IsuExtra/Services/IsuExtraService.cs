@@ -19,21 +19,19 @@ namespace IsuExtra.Services
 
         public void AddRegularLesson(Student student, string subject, double time, int day, int classroom, string teacher)
         {
+            var lesson = new Lesson(subject, time, day, classroom, teacher);
             if (!_dict.ContainsKey(student.Group))
             {
                 _dict.Add(student.Group, new List<Lesson>());
             }
-            _dict.
-            // List<Lesson> lesson = _dict[student.Group];
-            // var les = new Lesson(subject, time, day, classroom, teacher);
-            // lesson.Add(les);
 
-            // foreach (Lesson lesson1 in lesson) _dict[student.Group].Add(lesson1);
+            _dict[student.Group].Add(lesson);
         }
 
-        public Student AddStudentOgnp(Student student, Ognp ognp, int ognpgroupnumber)
+        public Student AddStudentOgnp(Student student, Ognp ognp)
         {
-            foreach (Lesson regularles in _dict.GetValueOrDefault(student.Group))
+            List<Lesson> timetable = _dict[student.Group];
+            foreach (Lesson regularles in timetable)
             {
                 if (ognp.Stream.Lessons.Any(ognples => (regularles.Time == ognples.Time) && (regularles.WeekDay == ognples.WeekDay)))
                 {
@@ -46,7 +44,8 @@ namespace IsuExtra.Services
                 throw new IsuExtraException("chosen course cant be taken");
             }
 
-            ognp.Stream.AddStudentOgnpGroup(student, ognpgroupnumber);
+            ognp.Stream.AddToGroup(student, ognp);
+            ognp.Stream.AddStudentOgnpGroup(student, ognp);
 
             ognp.Stream.Students.Add(student);
             student.OgnpRegister = 1;
@@ -60,7 +59,7 @@ namespace IsuExtra.Services
 
         public Ognp AddNewOgnp(string ognpname, double time, int weekday, string nameteacher, int classroom)
         {
-            var newstream = new Stream(ognpname, 01);
+            var newstream = new Stream(ognpname, 1);
             var newlesson = new Lesson(ognpname, time, weekday, classroom, nameteacher);
             newstream.Lessons.Add(newlesson);
             var newognp = new Ognp(ognpname, newstream);
@@ -82,6 +81,8 @@ namespace IsuExtra.Services
         public List<Student> NotSubscribedStudents()
         {
             return IsuService.Students.Where(student => student.OgnpRegister == 0).ToList();
+
+            // return IsuService.Students.Where(student => student.OgnpRegister == 0).ToList();
         }
     }
 }

@@ -23,16 +23,17 @@ namespace IsuExtra.Entities
         public List<Lesson> Lessons { get; }
         public int GroupNumber { get; }
 
-        public List<Student> ReturnStudents(Ognp ognp)
+        public static IEnumerable<Student> ReturnStudents(Ognp ognp)
         {
             var tracklist = ognp.Stream.Students.ToList();
             return tracklist;
         }
 
-        public Student AddStudentOgnpGroup(Student student, int number)
+        public Student AddStudentOgnpGroup(Student student, Ognp ognp)
         {
             int contained = 0;
-            foreach (Student st in _streamgroup[number])
+            List<Student> list = _streamgroup[ognp.Stream.GroupNumber];
+            foreach (Student st in list)
             {
                 contained++;
             }
@@ -42,13 +43,19 @@ namespace IsuExtra.Entities
                 throw new IsuExtraException();
             }
 
-            _streamgroup[number].Add(student);
+            _streamgroup[ognp.Stream.GroupNumber].Add(student);
             return student;
         }
 
         public List<Student> StudentsInNamedGroup(int number)
         {
             return _streamgroup[number];
+        }
+
+        public void AddToGroup(Student student, Ognp ognp)
+        {
+            _streamgroup.Add(ognp.Stream.GroupNumber, new List<Student>());
+            _streamgroup[ognp.Stream.GroupNumber].Add(student);
         }
     }
 }

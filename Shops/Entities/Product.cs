@@ -8,7 +8,7 @@
             Name = name;
             Id = _id++ + 100;
             Price = price;
-            Amount = Amount;
+            Amount = 0;
         }
 
         public string Name { get; }

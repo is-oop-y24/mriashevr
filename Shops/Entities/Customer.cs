@@ -1,20 +1,26 @@
-﻿namespace Shops.Entities
+﻿using System.Data.SqlTypes;
+
+namespace Shops.Entities
 {
     public class Customer
     {
+        private int _money;
         public Customer(string name, int money)
         {
-            Money = money;
+            _money = money;
             Name = name;
         }
 
-        public int Money { get; }
         public string Name { get; }
 
-        public Customer ChangeMoney(Customer customer1, int price)
+        public void Withdraw(int price)
         {
-            var customer2 = new Customer(customer1.Name, customer1.Money - price);
-            return customer2;
+            _money -= price;
+        }
+
+        public int GetMoney()
+        {
+            return _money;
         }
     }
 }

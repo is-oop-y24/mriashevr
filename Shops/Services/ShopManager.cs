@@ -29,11 +29,9 @@ namespace Shops.Services
                     shop.Products.Add(product);
                     foreach (Product internalproduct in shop.Products)
                     {
-                        if (name == internalproduct.Name)
-                        {
-                            internalproduct.Amount = amount;
-                            return internalproduct;
-                        }
+                        if (name != internalproduct.Name) continue;
+                        internalproduct.Amount = amount;
+                        return internalproduct;
                     }
                 }
             }
@@ -50,38 +48,44 @@ namespace Shops.Services
 
         public Product ProductRegister(string name, int price)
         {
-            var prdct = new Product(name, price);
-            _productCatalog.Add(prdct);
-            return prdct;
+            var product = new Product(name, price);
+            _productCatalog.Add(product);
+            return product;
         }
 
         public void ChangeProductPrice(Shop shopid, Product product, int newprice)
         {
-            foreach (Product prdct in shopid.Products)
+            foreach (var productShop in shopid.Products.Where(productShop => productShop == product))
             {
-                if (prdct == product)
-                {
-                    prdct.Price = newprice;
-                }
+                productShop.Price = newprice;
             }
         }
 
         public Shop FindMinPrice(List<Product> orderedproducts)
         {
             int minPrice = 1000000;
+            int currentShopPrice = 0;
             Shop selectedShop = new Shop(null, null);
+
             foreach (Shop shop in _allShops)
             {
+                var selectedShopProducts = new List<Product>();
                 foreach (Product product in shop.Products)
                 {
                     foreach (Product product1 in orderedproducts)
                     {
-                        if (product.Price < minPrice && product.Name == product1.Name && product.Amount >= product1.Amount)
+                        if (product.Name == product1.Name && product.Amount >= product1.Amount)
                         {
-                            minPrice = product.Price;
-                            selectedShop = shop;
+                            selectedShopProducts.Add(product1);
+                            currentShopPrice += product.Price;
                         }
                     }
+                }
+
+                if (currentShopPrice < minPrice && currentShopPrice != 0 && orderedproducts.Count == selectedShopProducts.Count)
+                {
+                    minPrice = currentShopPrice;
+                    selectedShop = shop;
                 }
             }
 
@@ -98,7 +102,7 @@ namespace Shops.Services
             return selectedShop;
         }
 
-        public Product BuyProduct(Customer customer, Shop shop, List<Product> products)
+        public void BuyProduct(Customer customer, Shop shop, List<Product> products)
         {
             foreach (Product product in shop.Products)
             {
@@ -107,11 +111,10 @@ namespace Shops.Services
                     if (product == listedproduct)
                     {
                         if (product.Amount >= listedproduct.Amount &&
-                            customer.Money >= (product.Price * listedproduct.Amount))
+                            customer.GetMoney() >= (product.Price * listedproduct.Amount))
                         {
                             product.Amount = product.Amount - listedproduct.Amount;
-                            customer.ChangeMoney(customer, product.Price * listedproduct.Amount);
-                            return listedproduct;
+                            customer.Withdraw(product.Price * listedproduct.Amount);
                         }
                     }
                 }
@@ -125,11 +128,14 @@ namespace Shops.Services
                 Shop selectedShop = FindMinPrice(orderedproducts);
                 foreach (Product product1 in orderedproducts)
                 {
-                    foreach (var product in selectedShop.Products.Where(product => product.Name == product1.Name && customer.Money >= (product.Price * product1.Amount)))
+                    foreach (var product in selectedShop.Products)
                     {
-                        customer.ChangeMoney(customer, product.Price * product1.Amount);
-                        product.Amount = product.Amount - product1.Amount;
-                        return selectedShop;
+                       if (product.Name == product1.Name && customer.GetMoney() >= (product.Price * product1.Amount))
+                       {
+                            customer.Withdraw(product.Price * product1.Amount);
+                            product.Amount = product.Amount - product1.Amount;
+                            return selectedShop;
+                       }
                     }
                 }
 

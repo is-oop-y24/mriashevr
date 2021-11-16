@@ -77,7 +77,7 @@ namespace Shops.Services
                         if (product.Name == product1.Name && product.Amount >= product1.Amount)
                         {
                             selectedShopProducts.Add(product1);
-                            currentShopPrice += product.Price;
+                            currentShopPrice += product.Price * product1.Amount;
                         }
                     }
                 }

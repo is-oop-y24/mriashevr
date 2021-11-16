@@ -8,6 +8,7 @@ namespace IsuExtra.Entities
 {
     public class Stream
     {
+        private int maxStudents = 30;
         private Dictionary<int, List<Student>> _streamgroup;
         public Stream(string name, int groupnumber)
         {
@@ -25,20 +26,14 @@ namespace IsuExtra.Entities
 
         public static IEnumerable<Student> ReturnStudents(Ognp ognp)
         {
-            var tracklist = ognp.Stream.Students.ToList();
-            return tracklist;
+            return ognp.Stream.Students.ToList();
         }
 
         public Student AddStudentOgnpGroup(Student student, Ognp ognp)
         {
-            int contained = 0;
-            List<Student> list = _streamgroup[ognp.Stream.GroupNumber];
-            foreach (Student st in list)
-            {
-                contained++;
-            }
+            int contained = _streamgroup[ognp.Stream.GroupNumber].Count;
 
-            if (contained > 30)
+            if (contained > maxStudents)
             {
                 throw new IsuExtraException();
             }

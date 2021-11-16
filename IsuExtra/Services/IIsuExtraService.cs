@@ -10,5 +10,7 @@ namespace IsuExtra.Services
         Ognp AddNewOgnp(string ognpname, double time, int weekday, string nameteacher, int classroom);
         Student UnsubscribeOgnp(Student student, Ognp ognp);
         List<Student> NotSubscribedStudents();
+        IEnumerable<Student> ReturnStudents(Ognp ognp);
+        List<Student> StudentsInNamedGroup(int number);
     }
 }

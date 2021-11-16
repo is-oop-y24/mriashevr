@@ -14,7 +14,7 @@ namespace Isu.Services
             Groups = new List<Group>();
         }
 
-        public List<Student> Students { get; set; }
+        public List<Student> Students { get; }
         public List<Group> Groups { get; }
 
         public Group AddGroup(string groupname)

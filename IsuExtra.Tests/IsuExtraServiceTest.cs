@@ -32,8 +32,9 @@ namespace IsuExtra.Tests
         {
             Group group = _isuService.AddGroup("M3208");
             Student student = _isuService.AddStudent(group, "ivan");
-            _isuExtraService.AddRegularLesson(student, "math", 11.20, 2, 123, "kk");
-            Ognp ognp = _isuExtraService.AddNewOgnp("L2", 11.20, 2, "kolesnikov", 101);
+            DateTime time = new DateTime(2021, 10, 23, 13, 30, 0);
+            _isuExtraService.AddRegularLesson(student, "math", time, 123, "kk");
+            Ognp ognp = _isuExtraService.AddNewOgnp("L2", time, "kolesnikov", 101);
             Catch<IsuExtraException>(() =>
             {
                 _isuExtraService.AddStudentOgnp(student, ognp);
@@ -46,11 +47,13 @@ namespace IsuExtra.Tests
             Group group = _isuService.AddGroup("M3208");
             Student student1 = _isuService.AddStudent(group, "ivan");
             Student student2 = _isuService.AddStudent(group, "ian");
-            _isuExtraService.AddRegularLesson(student1, "math", 12.20, 3, 123, "kk");
-            _isuExtraService.AddRegularLesson(student2, "math", 11.20, 4, 123, "kk");
-            Ognp ognp = _isuExtraService.AddNewOgnp("L2", 11.20, 2, "kolesnikov", 101);
+            DateTime time1 = new DateTime(2021, 10, 23, 13, 30, 0);
+            DateTime time2 = new DateTime(2021, 10, 22, 12, 0, 0);
+            DateTime time3 = new DateTime(2021, 10, 25, 12, 0, 0);
+            _isuExtraService.AddRegularLesson(student1, "math", time2, 123, "kk");
+            _isuExtraService.AddRegularLesson(student2, "math", time1, 123, "kk");
+            Ognp ognp = _isuExtraService.AddNewOgnp("L2", time3, "kolesnikov", 101);
             _isuExtraService.AddStudentOgnp(student1, ognp);
-            // var list = _isuExtraService.NotSubscribedStudents();
             var list = _isuService.Students.Where(student => student.OgnpRegister == 0).ToList();
             List<Student> result = new List<Student>() {student2};
             Assert.AreEqual(result, list);
@@ -61,8 +64,10 @@ namespace IsuExtra.Tests
         {
             Group group = _isuService.AddGroup("M3208");
             Student student = _isuService.AddStudent(group, "ivalena");
-            _isuExtraService.AddRegularLesson(student, "math", 11.20, 2, 123, "kk");
-            Ognp ognp = _isuExtraService.AddNewOgnp("M3", 11.20, 5, "kolesnikov", 101);
+            DateTime time1 = new DateTime(2021, 10, 23, 13, 30, 0);
+            DateTime time2 = new DateTime(2021, 10, 25, 13, 30, 0);
+            _isuExtraService.AddRegularLesson(student, "math", time1, 123, "kk");
+            Ognp ognp = _isuExtraService.AddNewOgnp("M3", time2, "kolesnikov", 101);
             Catch<IsuExtraException>(() =>
             {
                 _isuExtraService.AddStudentOgnp(student, ognp);

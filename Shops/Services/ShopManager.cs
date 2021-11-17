@@ -55,10 +55,8 @@ namespace Shops.Services
 
         public void ChangeProductPrice(Shop shopid, Product product, int newprice)
         {
-            foreach (var productShop in shopid.Products.Where(productShop => productShop == product))
-            {
-                productShop.Price = newprice;
-            }
+            Product newproduct = shopid.Products.FirstOrDefault(x => x.Id == product.Id); // null
+            newproduct.Price = newprice;
         }
 
         public Shop FindMinPrice(List<Product> orderedproducts)
@@ -104,23 +102,21 @@ namespace Shops.Services
 
         public void BuyProduct(Customer customer, Shop shop, List<Product> products)
         {
-            foreach (Product product in shop.Products)
-            {
                 foreach (var listedproduct in products)
                 {
-                    if (product == listedproduct)
+                    Product newproduct = shop.Products.FirstOrDefault(x => x.Id == listedproduct.Id);
+                    if (newproduct == listedproduct)
                     {
-                        if (product.Amount >= listedproduct.Amount &&
-                            customer.GetMoney() >= (product.Price * listedproduct.Amount))
+                        if (newproduct.Amount >= listedproduct.Amount &&
+                            customer.GetMoney() >= (newproduct.Price * listedproduct.Amount))
                         {
-                            product.Amount = product.Amount - listedproduct.Amount;
-                            customer.Withdraw(product.Price * listedproduct.Amount);
+                            newproduct.Amount = newproduct.Amount - listedproduct.Amount;
+                            customer.Withdraw(newproduct.Price * listedproduct.Amount);
                         }
                     }
                 }
-            }
 
-            throw new ShopException("error occurred while buying");
+                throw new ShopException("error occurred while buying");
         }
 
         public Shop Delivery(Customer customer, List<Product> orderedproducts)

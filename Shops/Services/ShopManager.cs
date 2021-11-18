@@ -55,7 +55,12 @@ namespace Shops.Services
 
         public void ChangeProductPrice(Shop shopid, Product product, int newprice)
         {
-            Product newproduct = shopid.Products.FirstOrDefault(x => x.Id == product.Id); // null
+            Product newproduct = shopid.Products.FirstOrDefault(x => x.Id == product.Id);
+            if (newproduct == null)
+            {
+                throw new ShopException("something went wrong");
+            }
+
             newproduct.Price = newprice;
         }
 

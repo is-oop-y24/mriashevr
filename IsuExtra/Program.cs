@@ -1,9 +1,9 @@
-﻿namespace IsuExtra
+﻿ namespace IsuExtra
 {
-    internal class Program
-    {
+     internal class Program
+     {
         private static void Main()
         {
         }
-    }
-}
+     }
+ }

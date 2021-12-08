@@ -36,7 +36,7 @@ namespace Backups.Entities
             }
 
             return newStorages;
-        }
+        } // выделить интерфейс фй репозиторий и сделать два класса локал и виртуал
 
         public List<Storage> StartLocalBackup(List<Storage> localStorages, string newDirectory)
         {

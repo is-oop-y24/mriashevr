@@ -18,7 +18,7 @@ namespace Backups.Tests
         }
 
         [Test]
-        public void CreateBackup()
+        public void CreateBackup() // для тестов использовать виртуальный репозиторий
         {
             JobObject jobObject1 = _backupManager.AddJobObject("../../../../Backups/Files/FileA");
             JobObject jobObject2 = _backupManager.AddJobObject("../../../../Backups/Files/FileB");

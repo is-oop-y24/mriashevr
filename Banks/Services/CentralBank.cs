@@ -11,7 +11,7 @@ namespace Banks.Services
 
         public User CreateUser(string name, string surname, Bank bank)
         {
-            var user = new User(name, surname, " ", 0);
+            var user = new User(name, surname, null, default);
             user.AddListBank(bank);
             bank.Users.Add(user);
             return user;

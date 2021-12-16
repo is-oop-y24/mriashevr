@@ -8,6 +8,7 @@ namespace Banks.Entities
     public abstract class BankAccount
     {
         private int _maxTransferingForSuspiciousUsers = 30000;
+        private Dictionary<Guid, int> _transactions;
         public BankAccount(Bank bank, User user)
         {
             User = user;
@@ -16,7 +17,7 @@ namespace Banks.Entities
             MoneySum = 0;
             MoneyDebt = null;
             MinusPercents = null;
-            Transactions = new Dictionary<Guid, int>();
+            _transactions = new Dictionary<Guid, int>();
         }
 
         public Guid Id { get; }
@@ -25,7 +26,6 @@ namespace Banks.Entities
         public int? MoneyDebt { get; private set; }
         public int? MinusPercents { get; private set; }
         public User User { get; }
-        public Dictionary<Guid, int> Transactions { get; }
 
         public BankAccount AddTimePassPercentsM(BankAccount bankAccount, int month)
         {
@@ -51,13 +51,13 @@ namespace Banks.Entities
             return bankAccount;
         }
 
-        public virtual BankAccount WithdrawMoney(BankAccount bankAccount, int money)
+        public virtual BankAccount WithdrawMoney(int money)
         {
-            if (bankAccount.MoneySum >= money)
+            if (MoneySum >= money)
             {
-                bankAccount.MoneySum -= money;
-                bankAccount.Transactions.Add(Guid.NewGuid(), money);
-                return bankAccount;
+                MoneySum -= money;
+                _transactions.Add(Guid.NewGuid(), money);
+                return this;
             }
 
             throw new BanksException("not enough money");
@@ -65,9 +65,9 @@ namespace Banks.Entities
 
         public virtual BankAccount TransferMoney(BankAccount bankAccountBegin, BankAccount bankAccountEnd, int money)
         {
-            int x = bankAccountBegin.User.GetPassport();
-            string x1 = bankAccountBegin.User.GetAddress();
-            if (x == 0 && x1 == " " && money > _maxTransferingForSuspiciousUsers)
+            int passport = bankAccountBegin.User.GetPassport();
+            string address = bankAccountBegin.User.GetAddress();
+            if (passport == default && address == null && money > _maxTransferingForSuspiciousUsers)
             {
                 throw new BanksException("sus, passport required");
             }
@@ -76,9 +76,9 @@ namespace Banks.Entities
             {
                 bankAccountBegin.MoneySum -= money;
                 Guid id = Guid.NewGuid();
-                bankAccountBegin.Transactions.Add(id, money);
+                bankAccountBegin._transactions.Add(id, money);
                 bankAccountEnd.MoneySum += money;
-                bankAccountEnd.Transactions.Add(id, money);
+                bankAccountEnd._transactions.Add(id, money);
                 return bankAccountBegin;
             }
 
@@ -93,7 +93,7 @@ namespace Banks.Entities
 
         public BankAccount CancelTransaction(BankAccount bankAccountBegin, BankAccount bankAccountEnd, Guid transactionId)
         {
-            var money = bankAccountBegin.Transactions.GetValueOrDefault(transactionId);
+            var money = bankAccountBegin._transactions.GetValueOrDefault(transactionId);
             bankAccountBegin.TransferMoney(bankAccountEnd, bankAccountBegin, money);
 
             return bankAccountBegin;

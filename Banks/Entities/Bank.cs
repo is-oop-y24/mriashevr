@@ -36,7 +36,7 @@ namespace Banks.Entities
 
         public BankAccount CreateDebitBankAccount(Bank bank, int offernumber, User user)
         {
-            var debit = new DepositBankAccount(bank, user);
+            var debit = new DebitBankAccount(bank, user);
             debit.ChangePlusPercents(debit, bank.Offers[offernumber]);
             return debit;
         }

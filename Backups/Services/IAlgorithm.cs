@@ -5,6 +5,6 @@ namespace Backups.Services
 {
     public interface IAlgorithm
     {
-        List<Storage> ChooseYourAlgorithm(List<JobObject> jobObjects); // create storages переименовать метод
+        List<Storage> CreateStorages(List<JobObject> jobObjects);
     }
 }

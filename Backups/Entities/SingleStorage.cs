@@ -5,7 +5,7 @@ namespace Backups.Entities
 {
     public class SingleStorage : IAlgorithm
     {
-        public List<Storage> ChooseYourAlgorithm(List<JobObject> jobObjects)
+        public List<Storage> CreateStorages(List<JobObject> jobObjects)
         {
             var storages = new List<Storage>();
             storages.Add(new Storage(jobObjects));

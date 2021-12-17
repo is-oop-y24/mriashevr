@@ -29,7 +29,7 @@ namespace Backups.Services
         {
             var restorePoint = new RestorePoint();
             Repository.CreateDirectory(restorePoint.NameDirectory);
-            List<Storage> storages = algorithm.ChooseYourAlgorithm(BackupJob.JobObjects);
+            List<Storage> storages = algorithm.CreateStorages(BackupJob.JobObjects);
             List<Storage> newStorages = Repository.StartLocalBackup(storages, restorePoint.NameDirectory);
             restorePoint.Storages.AddRange(newStorages);
             BackupJob.RestorePoints.Add(restorePoint);

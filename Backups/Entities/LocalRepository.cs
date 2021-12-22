@@ -4,9 +4,9 @@ using Ionic.Zip;
 
 namespace Backups.Entities
 {
-    public class Repository
+    public class LocalRepository : IRepository
     {
-        public Repository(DirectoryInfo directory)
+        public LocalRepository(DirectoryInfo directory)
         {
             DirectoryPath = directory;
         }
@@ -18,27 +18,7 @@ namespace Backups.Entities
             Directory.CreateDirectory($"{DirectoryPath}/{directoryName}");
         }
 
-        public List<Storage> StartVirtualBackup(List<Storage> localStorages, string newDirectory)
-        {
-            var newStorages = new List<Storage>();
-            foreach (Storage storage in localStorages)
-            {
-                var newStorage = new Storage();
-                foreach (JobObject jobObject in storage.ReservedJobObjects)
-                {
-                    string jobObjectName = jobObject.Path.Substring(jobObject.Path.LastIndexOf('/') + 1);
-                    string newpath = $@"{DirectoryPath.FullName}/{newDirectory}/{jobObjectName}.zip";
-                    var newJobObject = new JobObject(newpath);
-                    newStorage.ReservedJobObjects.Add(newJobObject);
-                }
-
-                newStorages.Add(newStorage);
-            }
-
-            return newStorages;
-        } // выделить интерфейс фй репозиторий и сделать два класса локал и виртуал
-
-        public List<Storage> StartLocalBackup(List<Storage> localStorages, string newDirectory)
+        public List<Storage> StartBackUp(List<Storage> localStorages, string newDirectory)
         {
             var newStorages = new List<Storage>();
             foreach (Storage storage in localStorages)

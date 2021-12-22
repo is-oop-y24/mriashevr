@@ -7,24 +7,24 @@ namespace Backups.Tests
 {
     public class BackupTests
     {
-        private Repository _repository;
+        private IRepository _repository;
         private BackupManager _backupManager;
 
         [SetUp]
         public void Setup()
         {
-            _repository = new Repository(new DirectoryInfo("../../../../Backups/Backups"));
+            _repository = new VirtualRepository(new DirectoryInfo("../../../../Backups/Backups"));
             _backupManager = new BackupManager(_repository);
         }
 
         [Test]
-        public void CreateBackup() // для тестов использовать виртуальный репозиторий
+        public void CreateBackup()
         {
             JobObject jobObject1 = _backupManager.AddJobObject("../../../../Backups/Files/FileA");
             JobObject jobObject2 = _backupManager.AddJobObject("../../../../Backups/Files/FileB");
-            _backupManager.CreateLocalBackup(new SplitStorage());
+            _backupManager.CreateBackUp(new SplitStorage());
             _backupManager.RemoveJobObject(jobObject2);
-            _backupManager.CreateLocalBackup(new SplitStorage());
+            _backupManager.CreateBackUp(new SplitStorage());
             Assert.AreEqual(_backupManager.BackupJob.RestorePoints.Count, 2);
             
             int count = 0;

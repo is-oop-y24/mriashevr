@@ -8,11 +8,13 @@ namespace Backups
     {
         private static void Main()
         {
-            var repository = new Repository(new DirectoryInfo("../../../Backups"));
+            IRepository repository = new LocalRepository(new DirectoryInfo("../../../Backups"));
+
+            // var repository = new Repository(new DirectoryInfo("../../../Backups"));
             var backupManager = new BackupManager(repository);
             backupManager.AddJobObject("../../../Files/FileA");
             backupManager.AddJobObject("../../../Files/FileB");
-            backupManager.CreateLocalBackup(new SingleStorage());
+            backupManager.CreateBackUp(new SingleStorage());
         }
     }
 }

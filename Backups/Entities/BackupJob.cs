@@ -22,5 +22,15 @@ namespace Backups.Entities
         {
             JobObjects.Remove(jobObject);
         }
+
+        public void RemoveRestorePoint(RestorePoint restorePoint)
+        {
+            RestorePoints.Remove(restorePoint);
+        }
+
+        public void AddRestorePoint(RestorePoint restorePoint)
+        {
+            RestorePoints.Add(restorePoint);
+        }
     }
 }

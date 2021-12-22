@@ -5,13 +5,13 @@ namespace Backups.Services
 {
     public class BackupManager
     {
-        public BackupManager(Repository repository)
+        public BackupManager(IRepository repository)
         {
             Repository = repository;
             BackupJob = new BackupJob();
         }
 
-        public Repository Repository { get; }
+        public IRepository Repository { get; }
         public BackupJob BackupJob { get; }
         public JobObject AddJobObject(string path)
         {
@@ -25,12 +25,12 @@ namespace Backups.Services
             BackupJob.RemoveJobObject(jobObject);
         }
 
-        public void CreateLocalBackup(IAlgorithm algorithm)
+        public void CreateBackUp(IAlgorithm algorithm)
         {
             var restorePoint = new RestorePoint();
             Repository.CreateDirectory(restorePoint.NameDirectory);
             List<Storage> storages = algorithm.CreateStorages(BackupJob.JobObjects);
-            List<Storage> newStorages = Repository.StartLocalBackup(storages, restorePoint.NameDirectory);
+            List<Storage> newStorages = Repository.StartBackUp(storages, restorePoint.NameDirectory);
             restorePoint.Storages.AddRange(newStorages);
             BackupJob.RestorePoints.Add(restorePoint);
         }

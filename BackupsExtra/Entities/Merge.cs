@@ -42,12 +42,11 @@ namespace BackupsExtra
 
         public List<RestorePoint> DeleteSingleStored(List<RestorePoint> restorePoints)
         {
-            RestorePoint restorePoint = restorePoints.Last();
-            foreach (RestorePoint point in restorePoints)
+            for (int i = 0; i < restorePoints.Count; i++)
             {
-                if (point.Storages.Count == 0 && point != restorePoint)
+                if (restorePoints[i].Storages.Count == 1)
                 {
-                    restorePoints.Remove(point);
+                    restorePoints.Remove(restorePoints[i]);
                 }
             }
 

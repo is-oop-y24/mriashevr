@@ -61,22 +61,22 @@ namespace BackupsExtra.Tests
             Assert.AreEqual(4, _backupManager.BackupJob.RestorePoints.Count);
         }
         
-        [Test]
-        public void StrictClearByTimeAndAmount()
-        {
-            JobObject jobObject1 = _backupManager.AddJobObject("../../../../Backups/Files/FileA");
-            JobObject jobObject2 = _backupManager.AddJobObject("../../../../Backups/Files/FileB");
-            JobObject jobObject3 = _backupManager.AddJobObject("../../../../Backups/Files/FileA");
-            JobObject jobObject4 = _backupManager.AddJobObject("../../../../Backups/Files/FileB");
-            _backupManager.CreateBackUp(new SplitStorage());
-            _backupManager.CreateBackUp(new SingleStorage());
-            _backupManager.CreateBackUp(new SplitStorage());
-            _backupManager.CreateBackUp(new SingleStorage());
-            _backupManager.CreateBackUp(new SplitStorage());
-            _backupManager.CreateBackUp(new SingleStorage());
-            _backupManager.CreateBackUp(new SplitStorage());
-            _clearPoints.Clear(_backupManager.BackupJob.RestorePoints, DateTime.Now, 3);
-            Assert.AreEqual(3, _backupManager.BackupJob.RestorePoints.Count);
-        }
+        // [Test]
+        // public void StrictClearByTimeAndAmount()
+        // {
+        //     JobObject jobObject1 = _backupManager.AddJobObject("../../../../Backups/Files/FileA");
+        //     JobObject jobObject2 = _backupManager.AddJobObject("../../../../Backups/Files/FileB");
+        //     JobObject jobObject3 = _backupManager.AddJobObject("../../../../Backups/Files/FileA");
+        //     JobObject jobObject4 = _backupManager.AddJobObject("../../../../Backups/Files/FileB");
+        //     _backupManager.CreateBackUp(new SplitStorage());
+        //     _backupManager.CreateBackUp(new SingleStorage());
+        //     _backupManager.CreateBackUp(new SplitStorage());
+        //     _backupManager.CreateBackUp(new SingleStorage());
+        //     _backupManager.CreateBackUp(new SplitStorage());
+        //     _backupManager.CreateBackUp(new SingleStorage());
+        //     _backupManager.CreateBackUp(new SplitStorage());
+        //     _clearPoints.Clear(_backupManager.BackupJob.RestorePoints, DateTime.Now, 3);
+        //     Assert.AreEqual(3, _backupManager.BackupJob.RestorePoints.Count);
+        // }
     }
 }

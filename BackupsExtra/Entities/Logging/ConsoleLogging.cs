@@ -2,7 +2,7 @@
 
 namespace BackupsExtra.Logging
 {
-    public class ConsoleLogging
+    public class ConsoleLogging : ILogging
     {
         public void LogCreatedRestorePoint()
         {

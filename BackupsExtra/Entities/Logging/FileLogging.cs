@@ -5,11 +5,11 @@ using System.Net;
 
 namespace BackupsExtra.Logging
 {
-    public class FileLogging
+    public class FileLogging : ILogging
     {
-        public FileLogging()
+        public FileLogging(string path)
         {
-            Path = "../../../../Backups/Files/";
+            Path = path;
         }
 
         public string Path { get; }

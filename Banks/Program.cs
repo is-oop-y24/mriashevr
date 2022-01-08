@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Banks.Entities;
 using Banks.Services;
 
@@ -10,8 +11,8 @@ namespace Banks
         {
             CentralBank centralBank = new CentralBank();
             var bank = centralBank.CreateBank("DVBank");
-            bank.AddNewOffer(bank, 3);
-            bank.AddNewOffer(bank, 7);
+            bank.AddNewOffer(3);
+            bank.AddNewOffer(7);
             var transferingUser = centralBank.CreateUser("hope", "itdwork", bank);
             var trba = bank.CreateDebitBankAccount(bank, 2, transferingUser);
             Console.WriteLine("Would you like to open a bank account in DV Bank?");
@@ -55,11 +56,11 @@ namespace Banks
                     string c = Console.ReadLine();
                     if (c == "1")
                     {
-                        bankAccount = bank.CreateCreditBankAccount(bank, bank.Offers[1], user);
+                        bankAccount = bank.CreateCreditBankAccount(bank, bank.Offers.FirstOrDefault(offer => offer.OfferNumber == 1).Percentage, user);
                     }
                     else
                     {
-                        bankAccount = bank.CreateCreditBankAccount(bank, bank.Offers[2], user);
+                        bankAccount = bank.CreateCreditBankAccount(bank, bank.Offers.FirstOrDefault(offer => offer.OfferNumber == 2).Percentage, user);
                     }
 
                     Console.WriteLine("Perfect, now you have a credit card");
@@ -71,11 +72,11 @@ namespace Banks
                     string c = Console.ReadLine();
                     if (c == "1")
                     {
-                        bankAccount = bank.CreateDepositBankAccount(bank, bank.Offers[1], user);
+                        bankAccount = bank.CreateDepositBankAccount(bank, bank.Offers.FirstOrDefault(offer => offer.OfferNumber == 1).Percentage, user);
                     }
                     else
                     {
-                        bankAccount = bank.CreateDepositBankAccount(bank, bank.Offers[2], user);
+                        bankAccount = bank.CreateDepositBankAccount(bank, bank.Offers.FirstOrDefault(offer => offer.OfferNumber == 2).Percentage, user);
                     }
 
                     Console.WriteLine("Perfect, now you have a deposit card");
@@ -93,7 +94,7 @@ namespace Banks
                     Console.WriteLine("Enter sum you want to top up");
                     string m = Console.ReadLine();
                     int money = int.Parse(m);
-                    bankAccount.TopUpMoney(bankAccount, money);
+                    bankAccount.TopUpMoney(money);
                 }
                 else if (operation == "2")
                 {

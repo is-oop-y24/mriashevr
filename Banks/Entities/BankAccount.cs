@@ -8,19 +8,19 @@ namespace Banks.Entities
     public abstract class BankAccount
     {
         private int _maxTransferingForSuspiciousUsers = 30000;
-        private Dictionary<Guid, int> _transactions;
         public BankAccount(Bank bank, User user)
         {
             User = user;
-            PlusPercents = null;
+            Bank = bank;
+            PlusPercents = 1;
             Id = Guid.NewGuid();
             MoneySum = 0;
             MoneyDebt = null;
             MinusPercents = null;
-            _transactions = new Dictionary<Guid, int>();
         }
 
         public Guid Id { get; }
+        public Bank Bank { get; }
         public int? MoneySum { get; private set; }
         public int? PlusPercents { get; private set; }
         public int? MoneyDebt { get; private set; }
@@ -39,10 +39,10 @@ namespace Banks.Entities
             return bankAccount;
         }
 
-        public BankAccount ChangePlusPercents(BankAccount bankAccount, int x)
+        public BankAccount ChangePlusPercents(int x)
         {
-            bankAccount.PlusPercents = x;
-            return bankAccount;
+            PlusPercents = x;
+            return this;
         }
 
         public BankAccount ChangeMinusPercents(BankAccount bankAccount, int x)
@@ -56,7 +56,7 @@ namespace Banks.Entities
             if (MoneySum >= money)
             {
                 MoneySum -= money;
-                _transactions.Add(Guid.NewGuid(), money);
+                Bank.Transactions.Add(new Transaction(this, null, money));
                 return this;
             }
 
@@ -76,27 +76,19 @@ namespace Banks.Entities
             {
                 bankAccountBegin.MoneySum -= money;
                 Guid id = Guid.NewGuid();
-                bankAccountBegin._transactions.Add(id, money);
+                bankAccountBegin.Bank.Transactions.Add(new Transaction(bankAccountBegin, bankAccountEnd, money));
                 bankAccountEnd.MoneySum += money;
-                bankAccountEnd._transactions.Add(id, money);
                 return bankAccountBegin;
             }
 
             throw new BanksException("not enough money to complete the transfer");
         }
 
-        public BankAccount TopUpMoney(BankAccount bankAccount, int money)
+        public BankAccount TopUpMoney(int money)
         {
-            bankAccount.MoneySum += money;
-            return bankAccount;
-        }
-
-        public BankAccount CancelTransaction(BankAccount bankAccountBegin, BankAccount bankAccountEnd, Guid transactionId)
-        {
-            var money = bankAccountBegin._transactions.GetValueOrDefault(transactionId);
-            bankAccountBegin.TransferMoney(bankAccountEnd, bankAccountBegin, money);
-
-            return bankAccountBegin;
+            MoneySum += money;
+            Bank.Transactions.Add(new Transaction(null, this, money));
+            return this;
         }
     }
 }

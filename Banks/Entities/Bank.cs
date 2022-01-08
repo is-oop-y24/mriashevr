@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using Banks.BankAccountTypes;
 
@@ -7,45 +9,67 @@ namespace Banks.Entities
 {
     public class Bank
     {
-        private int a = 1;
         public Bank(string name)
         {
             Name = name;
             Users = new List<User>();
             BankAccounts = new List<BankAccount>();
-            Offers = new Dictionary<int, int>();
+            Offers = new List<Offer>();
+            Transactions = new List<Transaction>();
         }
 
-        public Dictionary<int, int> Offers { get; }
+        public List<Offer> Offers { get; }
         public string Name { get; }
         public List<User> Users { get; }
         public List<BankAccount> BankAccounts { get; }
+        public List<Transaction> Transactions { get; }
 
-        public void AddNewOffer(Bank bank, int percentage)
+        public void AddNewOffer(int percentage)
         {
-            bank.Offers[a] = percentage;
-            a++;
+            Offers.Add(new Offer(percentage));
         }
 
-        public BankAccount CreateDepositBankAccount(Bank bank, int offernumber, User user)
+        public BankAccount CreateDepositBankAccount(Bank bank, int offerNumber, User user)
         {
             var deposit = new DepositBankAccount(bank, user);
-            deposit.ChangePlusPercents(deposit, bank.Offers[offernumber]);
+            deposit.ChangePlusPercents(bank.Offers.FirstOrDefault(offer => offer.OfferNumber == offerNumber).Percentage);
             return deposit;
         }
 
-        public BankAccount CreateDebitBankAccount(Bank bank, int offernumber, User user)
+        public BankAccount CreateDebitBankAccount(Bank bank, int offerNumber, User user)
         {
             var debit = new DebitBankAccount(bank, user);
-            debit.ChangePlusPercents(debit, bank.Offers[offernumber]);
+            debit.ChangePlusPercents(bank.Offers.FirstOrDefault(offer => offer.OfferNumber == offerNumber).Percentage);
             return debit;
         }
 
-        public BankAccount CreateCreditBankAccount(Bank bank, int offernumber, User user)
+        public BankAccount CreateCreditBankAccount(Bank bank, int offerNumber, User user)
         {
             var credit = new DepositBankAccount(bank, user);
-            credit.ChangeMinusPercents(credit, bank.Offers[offernumber]);
+            credit.ChangeMinusPercents(credit, bank.Offers.FirstOrDefault(offer => offer.OfferNumber == offerNumber).Percentage);
             return credit;
+        }
+
+        public Transaction CancelTransaction(Guid transactionId)
+        {
+            Transaction transaction = Transactions.FirstOrDefault(transaction => transaction.Id == transactionId);
+            if (transaction.ProceededOrDeclined)
+            {
+                if (transaction.AccountTo == null)
+                {
+                    transaction.AccountFrom.TopUpMoney(transaction.Sum);
+                }
+
+                if (transaction.AccountFrom == null)
+                {
+                    transaction.AccountTo.WithdrawMoney(transaction.Sum);
+                }
+
+                transaction.AccountFrom.TransferMoney(transaction.AccountTo, transaction.AccountFrom, transaction.Sum);
+                transaction.DeclineTransaction();
+            }
+
+            return transaction;
         }
     }
 }

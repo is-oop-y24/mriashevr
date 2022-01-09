@@ -10,18 +10,18 @@ namespace Banks.Entities
             AccountFrom = accountFrom;
             AccountTo = accountTo;
             Sum = sum;
-            ProceededOrDeclined = true;
+            MayBeCanceled = true;
         }
 
         public BankAccount AccountFrom { get; }
         public BankAccount AccountTo { get; }
         public int Sum { get; }
-        public bool ProceededOrDeclined { get; private set; }
+        public bool MayBeCanceled { get; private set; }
         public Guid Id { get; }
 
         public void DeclineTransaction()
         {
-            ProceededOrDeclined = false;
+            MayBeCanceled = false;
         }
     }
 }

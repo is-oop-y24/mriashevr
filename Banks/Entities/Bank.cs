@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using Banks.BankAccountTypes;
+using Banks.Tools;
 
 namespace Banks.Entities
 {
@@ -53,16 +54,26 @@ namespace Banks.Entities
         public Transaction CancelTransaction(Guid transactionId)
         {
             Transaction transaction = Transactions.FirstOrDefault(transaction => transaction.Id == transactionId);
-            if (transaction.ProceededOrDeclined)
+
+            if (transaction == null)
+            {
+                throw new BanksException("transaction not found");
+            }
+
+            if (transaction.MayBeCanceled)
             {
                 if (transaction.AccountTo == null)
                 {
                     transaction.AccountFrom.TopUpMoney(transaction.Sum);
+                    transaction.DeclineTransaction();
+                    return transaction;
                 }
 
                 if (transaction.AccountFrom == null)
                 {
                     transaction.AccountTo.WithdrawMoney(transaction.Sum);
+                    transaction.DeclineTransaction();
+                    return transaction;
                 }
 
                 transaction.AccountFrom.TransferMoney(transaction.AccountTo, transaction.AccountFrom, transaction.Sum);

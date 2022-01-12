@@ -77,7 +77,10 @@ namespace Shops.Tests
             Product orderproduct = _shopManager.AddProducts("coke", 2, shop1);
             var orderedproducts= new List<Product>();
             orderedproducts.Add(orderproduct);
-            _shopManager.BuyProduct(customer, shop1, orderedproducts);
+            Assert.Catch<ShopException>(() =>
+            {
+                _shopManager.BuyProduct(customer, shop1, orderedproducts);
+            });
             Assert.AreEqual(0,product11.Amount);
         }
     }

@@ -8,7 +8,7 @@ using Banks.Tools;
 
 namespace Banks.Entities
 {
-    public class Bank
+    public class Bank : IObservable
     {
         public Bank(string name)
         {
@@ -17,6 +17,7 @@ namespace Banks.Entities
             BankAccounts = new List<BankAccount>();
             Offers = new List<Offer>();
             Transactions = new List<Transaction>();
+            ObserverNotifications = new List<IObserver>();
         }
 
         public List<Offer> Offers { get; }
@@ -24,6 +25,7 @@ namespace Banks.Entities
         public List<User> Users { get; }
         public List<BankAccount> BankAccounts { get; }
         public List<Transaction> Transactions { get; }
+        public List<IObserver> ObserverNotifications { get; }
 
         public void AddNewOffer(int percentage)
         {
@@ -76,11 +78,29 @@ namespace Banks.Entities
                     return transaction;
                 }
 
-                transaction.AccountFrom.TransferMoney(transaction.AccountTo, transaction.AccountFrom, transaction.Sum);
+                transaction.AccountFrom.TransferMoney(transaction.AccountFrom, transaction.Sum);
                 transaction.DeclineTransaction();
             }
 
             return transaction;
+        }
+
+        public void AddObserver(IObserver observer)
+        {
+            ObserverNotifications.Add(observer);
+        }
+
+        public void RemoveObserver(IObserver observer)
+        {
+            ObserverNotifications.Remove(observer);
+        }
+
+        public void Notification(BankAccount bankAccount, Transaction transaction)
+        {
+            foreach (var observer in ObserverNotifications)
+            {
+                observer.Notify(bankAccount, transaction);
+            }
         }
     }
 }

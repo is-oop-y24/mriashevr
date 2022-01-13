@@ -108,7 +108,7 @@ namespace Banks
                      Console.WriteLine("Enter sum you want to transfer");
                      string m = Console.ReadLine();
                      int money = int.Parse(m);
-                     bankAccount.TransferMoney(bankAccount, trba, money);
+                     bankAccount.TransferMoney(trba, money);
                 }
             }
         }

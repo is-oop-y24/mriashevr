@@ -31,7 +31,7 @@ namespace Banks.Tests
             ba1.TopUpMoney(50000);
             Assert.Catch<BanksException>(() =>
             {
-                ba1.TransferMoney(ba1, ba2, 31000);
+                ba1.TransferMoney(ba2, 31000);
             });
         }
 
@@ -73,7 +73,7 @@ namespace Banks.Tests
             User user2 = _centralBank.CreateUser("den", "maks", _bank);
             BankAccount account2 = _bank.CreateDebitBankAccount(_bank, 2, user2);
             account.TopUpMoney(5000);
-            account.TransferMoney(account, account2, 1000);
+            account.TransferMoney(account2, 1000);
             Assert.AreEqual(4000, account.MoneySum);
             Assert.AreEqual(1000, account2.MoneySum);
         }

@@ -72,5 +72,15 @@ namespace Banks.Entities
             _banks.Add(bank);
             return _banks;
         }
+
+        public bool Validation()
+        {
+            if (_passport == default || _address == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

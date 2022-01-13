@@ -5,7 +5,7 @@ using Banks.Tools;
 
 namespace Banks.Entities
 {
-    public abstract class BankAccount
+    public abstract class BankAccount : IObserver
     {
         private int _maxTransferingForSuspiciousUsers = 30000;
         public BankAccount(Bank bank, User user)
@@ -63,22 +63,20 @@ namespace Banks.Entities
             throw new BanksException("not enough money");
         }
 
-        public virtual BankAccount TransferMoney(BankAccount bankAccountBegin, BankAccount bankAccountEnd, int money)
+        public virtual BankAccount TransferMoney(BankAccount bankAccountEnd, int money)
         {
-            int passport = bankAccountBegin.User.GetPassport();
-            string address = bankAccountBegin.User.GetAddress();
-            if (passport == default && address == null && money > _maxTransferingForSuspiciousUsers)
+            if (!User.Validation() && money > _maxTransferingForSuspiciousUsers)
             {
                 throw new BanksException("sus, passport required");
             }
 
-            if (bankAccountBegin.MoneySum >= money)
+            if (MoneySum >= money)
             {
-                bankAccountBegin.MoneySum -= money;
+                MoneySum -= money;
                 Guid id = Guid.NewGuid();
-                bankAccountBegin.Bank.Transactions.Add(new Transaction(bankAccountBegin, bankAccountEnd, money));
+                Bank.Transactions.Add(new Transaction(this, bankAccountEnd, money));
                 bankAccountEnd.MoneySum += money;
-                return bankAccountBegin;
+                return this;
             }
 
             throw new BanksException("not enough money to complete the transfer");
@@ -89,6 +87,11 @@ namespace Banks.Entities
             MoneySum += money;
             Bank.Transactions.Add(new Transaction(null, this, money));
             return this;
+        }
+
+        public void Notify(BankAccount bankAccount, Transaction transaction)
+        {
+            Console.WriteLine("The transaction completed:" + transaction);
         }
     }
 }

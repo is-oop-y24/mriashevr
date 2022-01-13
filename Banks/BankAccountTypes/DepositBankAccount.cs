@@ -16,7 +16,7 @@ namespace Banks.BankAccountTypes
             throw new BanksException("Not able to withdraw money from deposit account");
         }
 
-        public override BankAccount TransferMoney(BankAccount bankAccountBegin, BankAccount bankAccountEnd, int money)
+        public override BankAccount TransferMoney(BankAccount bankAccountEnd, int money)
         {
             throw new BanksException("Not able to transfer money from deposit account");
         }
